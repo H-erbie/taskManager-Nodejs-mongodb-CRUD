@@ -31,6 +31,10 @@ const getTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Task not found!");
   }
+  if(task.user_id.toString() !== req.user.id){
+    res.status(403)
+    throw new Error ('User does not have permission to get other user tasks')
+  }
   res.status(200).json(task);
 });
 
@@ -41,9 +45,9 @@ const updateTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Task not found!");
   }
-  if(Task.user.id.toString() !== req.user.id){
+  if(Task.user_id.toString() !== req.user.id){
     res.status(403)
-    throw new Error ('User does not have permission to delete other user contacts')
+    throw new Error ('User does not have permission to delete other user tasks')
   }
   const updatedTask = await TaskModels.findByIdAndUpdate(
     req.params.id,
@@ -60,7 +64,7 @@ const deleteTask = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Task not found!");
   }
-  if(Task.user.id.toString() !== req.user.id){
+  if(Task.user_id.toString() !== req.user.id){
     res.status(403)
     throw new Error ('User does not have permission to delete other user contacts')
   }
